@@ -58,7 +58,7 @@
     .topbar-wrapper {
       position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 70rem;
       padding: 1.5rem 1rem 1rem; z-index: 40; display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-      background: linear-gradient(to bottom, color-mix(in oklab, var(--color-bg) 80%, transparent), transparent);
+      background: linear-gradient(to bottom, color-mix(in oklab, var(--color-bg) 85%, transparent), transparent);
       backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
       mask-image: linear-gradient(to bottom, black 60%, transparent); -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent);
     }
@@ -82,7 +82,7 @@
       min-height: 52px; border-radius: var(--radius-btn); transition: all 0.2s var(--ease-android); 
       display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; 
     }
-    button:active, .card-action:active, .bookmark-btn:active, .stat:active { transform: scale(0.94); }
+    button:active, .card-action:active, .bookmark-btn:active, .stat:active { transform: scale(0.92); }
     
     .icon-btn { width: 52px; border: 1px solid var(--color-border); background: var(--color-surface); }
     .primary-btn, .accent-btn, .success-btn, .ghost-btn { padding: 0.75rem 1.5rem; }
@@ -118,7 +118,7 @@
     .meal-card { 
       background: var(--color-surface); border: 1px solid var(--color-border); 
       border-radius: var(--radius-2xl); overflow: hidden; box-shadow: var(--shadow-md); 
-      display: flex; flex-direction: column; animation: slideUpFade 0.7s var(--ease-spring) backwards; 
+      display: flex; flex-direction: column; animation: slideUpFade 0.6s var(--ease-spring) backwards; 
     }
     .meal-card.locked { border-color: color-mix(in oklab, var(--color-success) 50%, transparent); box-shadow: 0 0 20px color-mix(in oklab, var(--color-success) 10%, transparent); }
     .meal-main { padding: 1.5rem; display: grid; gap: 0.5rem; }
@@ -138,7 +138,7 @@
       background: var(--color-surface-2); border: 1px solid var(--color-border);
       color: var(--color-text); transition: all 0.3s var(--ease-spring); cursor: pointer; flex-shrink: 0;
     }
-    .bookmark-btn.added { background: color-mix(in oklab, var(--color-success) 20%, transparent); color: var(--color-success); border-color: var(--color-success); }
+    .bookmark-btn.added { background: color-mix(in oklab, var(--color-success) 20%, transparent); color: var(--color-success); border-color: var(--color-success); transform: scale(1.05); }
 
     .meal-title { font-size: clamp(2rem, 7vw, 2.8rem); line-height: 1.05; font-family: var(--font-display); font-weight: 600; color: var(--color-text); letter-spacing: -0.03em; margin-bottom: 0.5rem; }
     
@@ -158,7 +158,7 @@
     .explore-area { 
       display: flex; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; gap: 0.75rem; 
       padding: 0 1.5rem; max-height: 0; opacity: 0; margin-top: -0.5rem;
-      transition: all 0.5s var(--ease-spring); border-top: 1px solid transparent; 
+      transition: all 0.4s var(--ease-spring); border-top: 1px solid transparent; 
     }
     .explore-area::-webkit-scrollbar { display: none; }
     .explore-area.open { 
@@ -171,16 +171,24 @@
     .empty { padding: 3rem 2rem; text-align: left; background: var(--color-surface); border-radius: var(--radius-2xl); border: 1px solid var(--color-border); color: var(--color-text-muted); font-size: 1.125rem; }
     .empty h3 { color: var(--color-text); margin-bottom: 0.5rem; font-family: var(--font-display); font-size: 2rem; line-height: 1.1; letter-spacing: -0.02em; }
     
-    /* FLOATING BOTTOM CONSOLE */
+    /* AUTO-HIDING FLOATING BOTTOM CONSOLE */
     .bottom-console {
-      position: fixed; left: 50%; bottom: calc(1.5rem + env(safe-area-inset-bottom)); transform: translateX(-50%);
+      position: fixed; left: 50%; bottom: max(1.5rem, env(safe-area-inset-bottom)); 
+      transform: translateX(-50%) translateY(0);
       width: calc(100% - 1.5rem); max-width: 600px; padding: 0.5rem;
       background: color-mix(in oklab, var(--color-surface) 75%, transparent);
-      backdrop-filter: blur(32px) saturate(150%); -webkit-backdrop-filter: blur(32px) saturate(150%);
+      backdrop-filter: blur(48px) saturate(150%); -webkit-backdrop-filter: blur(48px) saturate(150%);
       border: 1px solid var(--color-border);
       border-radius: 3rem; z-index: 20; box-shadow: var(--shadow-md);
       display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;
+      transition: transform 0.4s var(--ease-spring), opacity 0.3s var(--ease-android);
     }
+    .bottom-console.hidden {
+      transform: translateX(-50%) translateY(150%);
+      opacity: 0;
+      pointer-events: none;
+    }
+    
     .console-left { display: flex; }
     .console-right { display: flex; gap: 0.5rem; flex-grow: 1; justify-content: flex-end; }
     
@@ -188,7 +196,7 @@
     .modal { 
       position: fixed; inset: 0; background: color-mix(in oklab, #000 85%, transparent); 
       display: none; align-items: center; justify-content: center; padding: 1rem; z-index: 50; 
-      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); 
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); 
       opacity: 0; transition: opacity 0.3s var(--ease-android); 
     }
     .modal.open { display: flex; opacity: 1; }
@@ -227,7 +235,6 @@
     .review-queue-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
     .review-queue-item { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 12px 16px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 1.5rem; font-size: 1rem; }
     .review-queue-remove { color: var(--color-error); background: color-mix(in oklab, var(--color-error) 15%, transparent); border-radius: 50%; width: 36px; height: 36px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-    .review-queue-remove:active { transform: scale(0.9); }
     
     .input { width: 100%; padding: 1.125rem 1.5rem; border-radius: 1.25rem; border: 1px solid var(--color-border); background: var(--color-bg); font-size: 1rem; transition: border-color 0.2s; color: var(--color-text); }
     .input:focus { border-color: var(--color-primary); }
@@ -287,8 +294,7 @@
     </main>
   </div>
 
-  <!-- SPLIT FLOATING NAV BAR -->
-  <div class="bottom-console">
+  <div class="bottom-console" id="bottomConsole">
     <div class="console-left">
       <button id="fridgeBtn" class="icon-btn" style="border-radius: 50%; width: 56px; height: 56px; background: var(--color-surface-offset); border-color: var(--color-border);" type="button" title="Fridge Match">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -304,7 +310,6 @@
     </div>
   </div>
 
-  <!-- COOKBOOK MODAL -->
   <div id="dataModal" class="modal" aria-hidden="true">
     <section class="dialog">
       <div class="dialog-head">
@@ -358,7 +363,6 @@
     </section>
   </div>
 
-  <!-- FRIDGE MODAL -->
   <div id="fridgeModal" class="modal" aria-hidden="true">
     <section class="dialog small">
       <div class="dialog-head">
@@ -383,6 +387,24 @@
   </div>
 
   <script>
+    // --- SCROLL LISTENER FOR AUTO-HIDING NAV BAR ---
+    let lastScrollY = window.scrollY;
+    const bottomConsole = document.getElementById('bottomConsole');
+    
+    window.addEventListener('scroll', () => {
+      const currentScrollY = window.scrollY;
+      // Hide if scrolling down past 50px
+      if (currentScrollY > lastScrollY && currentScrollY > 50) {
+        bottomConsole.classList.add('hidden');
+      } 
+      // Show if scrolling up
+      else if (currentScrollY < lastScrollY) {
+        bottomConsole.classList.remove('hidden');
+      }
+      lastScrollY = currentScrollY;
+    }, { passive: true });
+
+    // --- EXACT JAVASCRIPT PRESERVED ---
     const GOOGLE_SHEETS_API_URL = "https://script.google.com/macros/s/AKfycbwnw_zAY55dbbvcyE1jxCVa6PKHcnYbwC6s0XPMPWupzX9GK0jZDZUmK2W0HXbCXVQ0rQ/exec";
 
     (() => {
@@ -647,10 +669,10 @@
             <div class="meal-title">${escapeHtml(item.name)}</div>
             
             <div class="nav-buttons-row">
-              <button class="card-action" type="button" data-action="prev" data-index="${index}" ${item.historyIndex > 0 && !item.isLocked ? '' : 'disabled'}>
+              <button class="card-action" style="padding:1rem;" type="button" data-action="prev" data-index="${index}" ${item.historyIndex > 0 && !item.isLocked ? '' : 'disabled'}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="11 17 6 12 11 7"></polyline><polyline points="18 17 13 12 18 7"></polyline></svg> Prev
               </button>
-              <button class="card-action" type="button" data-action="next" data-index="${index}" ${item.isLocked ? 'disabled' : ''}>
+              <button class="card-action" style="padding:1rem;" type="button" data-action="next" data-index="${index}" ${item.isLocked ? 'disabled' : ''}>
                 Next <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg>
               </button>
             </div>
@@ -824,7 +846,7 @@
           state.db[category].forEach((item) => {
             const row = document.createElement('div');
             row.className = 'data-row';
-            row.innerHTML = `<span style="font-weight:600; font-family:var(--font-display); font-size:1.125rem;">${escapeHtml(item)}</span>`;
+            row.innerHTML = `<span>${escapeHtml(item)}</span>`;
             section.appendChild(row);
           });
         }
