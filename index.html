@@ -35,13 +35,13 @@
       background: radial-gradient(circle at top, color-mix(in oklab, var(--color-primary) 10%, transparent), transparent 40%), var(--color-bg); 
       color: var(--color-text); overflow-x: hidden; 
     }
-    button, input { font: inherit; color: inherit; outline: none; }
+    button, input, select { font: inherit; color: inherit; outline: none; }
     button { cursor: pointer; border: none; background: none; }
     
     /* EDGE TO EDGE LAYOUT */
     .shell { 
       width: min(100% - 1.5rem, 70rem); margin: 0 auto; 
-      padding: clamp(1rem, 4vw, 2rem) 0.5rem calc(9rem + env(safe-area-inset-bottom)); 
+      padding: clamp(1rem, 4vw, 2rem) 0.5rem calc(10rem + env(safe-area-inset-bottom)); 
     }
     
     /* HEADER */
@@ -60,7 +60,7 @@
       min-height: 52px; border-radius: var(--radius-btn); transition: all 0.2s var(--ease-android); 
       display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; 
     }
-    button:active, .card-action:active, .badge-btn:active { transform: scale(0.95); }
+    button:active, .card-action:active, .bookmark-btn:active { transform: scale(0.95); }
     
     .icon-btn { width: 52px; border: 1px solid color-mix(in oklab, var(--color-text) 8%, transparent); background: var(--color-surface); }
     .primary-btn, .accent-btn, .success-btn, .ghost-btn { padding: 0.75rem 1.5rem; }
@@ -78,10 +78,12 @@
     .stats { display: flex; flex-direction: row; gap: 0.75rem; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
     .stats::-webkit-scrollbar { display: none; }
     .stat { 
-      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; 
+      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer;
       padding: 0.875rem; background: var(--color-surface-2); border-radius: 1.25rem; 
       border: 1px solid color-mix(in oklab, var(--color-text) 5%, transparent); min-width: 90px;
+      transition: all 0.2s var(--ease-android);
     }
+    .stat:active { transform: scale(0.95); background: var(--color-surface-offset); }
     .stat strong { font-size: 1.25rem; margin: 0; font-weight: 700; }
     .stat .subtle { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; margin: 0; }
     
@@ -100,25 +102,23 @@
     .meal-card.locked { border-color: var(--color-success); box-shadow: 0 0 0 2px var(--color-success); }
     .meal-main { padding: 1.5rem; display: grid; gap: 0.5rem; }
     
-    .card-header-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
-    .card-header-left { display: flex; flex-direction: column; gap: 6px; }
-    .card-header-right { display: flex; align-items: center; gap: 8px; }
+    .card-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+    .card-header-left { display: flex; align-items: center; gap: 10px; }
     .eyebrow { font-size: 0.8rem; letter-spacing: .12em; text-transform: uppercase; color: var(--color-text-muted); font-weight: 700; }
     
     .badge { padding: 0.35rem 0.875rem; border-radius: 2rem; font-size: 0.75rem; font-weight: 700; white-space: nowrap; display: inline-block; }
     .tag-veg { background: color-mix(in oklab, var(--color-success) 15%, transparent); color: var(--color-success); }
     .tag-egg { background: color-mix(in oklab, var(--color-secondary) 20%, transparent); color: #d97706; }
     .tag-nonveg { background: color-mix(in oklab, var(--color-error) 15%, transparent); color: var(--color-error); }
-    .badge.warning { background: color-mix(in oklab, var(--color-warning) 15%, transparent); color: var(--color-warning); }
     
-    .badge-btn { 
-      cursor: pointer; padding: 0.5rem 1rem; border-radius: 2rem; font-weight: 600; 
-      background: var(--color-surface-offset); color: var(--color-text); 
-      border: 1px solid color-mix(in oklab, var(--color-text) 10%, transparent); 
-      font-size: 0.875rem; display: flex; align-items: center; gap: 6px; transition: all 0.2s var(--ease-android); 
+    /* TOGGLE BOOKMARK BUTTON */
+    .bookmark-btn {
+      width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      background: var(--color-surface-offset); border: 1px solid color-mix(in oklab, var(--color-text) 8%, transparent);
+      color: var(--color-text); transition: all 0.2s var(--ease-android); cursor: pointer; flex-shrink: 0;
     }
-    .badge-btn.added { background: var(--color-success) !important; color: #fff !important; border-color: var(--color-success) !important; }
-    
+    .bookmark-btn.added { background: var(--color-success); color: #fff; border-color: var(--color-success); }
+
     .meal-title { font-size: clamp(1.8rem, 6vw, 2.6rem); line-height: 1.1; font-family: var(--font-display); font-weight: 600; color: var(--color-text); letter-spacing: -0.02em; margin-bottom: 0.5rem; }
     
     .nav-buttons-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: auto; }
@@ -137,21 +137,22 @@
     .empty { padding: 2.5rem; text-align: left; background: var(--color-surface); border-radius: var(--radius-2xl); border: 1px dashed color-mix(in oklab, var(--color-text) 15%, transparent); color: var(--color-text-muted); font-size: 1.125rem; }
     .empty h3 { color: var(--color-text); margin-bottom: 0.5rem; font-family: var(--font-display); font-size: 1.75rem; line-height: 1.2; }
     
-    /* FLOATING BOTTOM CONSOLE */
+    /* GOOGLE PHOTOS STYLE FLOATING NAV */
     .bottom-console {
       position: fixed; left: 50%; bottom: calc(1.5rem + env(safe-area-inset-bottom)); transform: translateX(-50%);
-      width: calc(100% - 2rem); max-width: 600px; padding: 0.75rem;
+      width: calc(100% - 1.5rem); max-width: 600px; padding: 0.5rem;
       background: color-mix(in oklab, var(--color-surface) 85%, transparent);
       backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
       border: 1px solid color-mix(in oklab, var(--color-text) 8%, transparent);
-      border-radius: 2.5rem; z-index: 20; box-shadow: var(--shadow-md);
+      border-radius: 3rem; z-index: 20; box-shadow: var(--shadow-md);
+      display: flex; justify-content: space-between; align-items: center;
     }
-    .console-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
-    .console-grid button { width: 100%; justify-content: center; min-height: 56px; border-radius: 2rem; }
+    .console-left { display: flex; }
+    .console-right { display: flex; gap: 0.5rem; flex-grow: 1; justify-content: flex-end; }
     
-    /* MODALS & BLUR BACKDROPS */
+    /* MODALS */
     .modal { 
-      position: fixed; inset: 0; background: color-mix(in oklab, #000 60%, transparent); 
+      position: fixed; inset: 0; background: color-mix(in oklab, #000 70%, transparent); 
       display: none; align-items: center; justify-content: center; padding: 1rem; z-index: 50; 
       backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); 
       opacity: 0; transition: opacity 0.3s var(--ease-android); 
@@ -163,12 +164,11 @@
       display: flex; flex-direction: column; transform: scale(0.95) translateY(20px); transition: all 0.3s var(--ease-android); 
     }
     .modal.open .dialog { transform: scale(1) translateY(0); }
-    .dialog.small { width: min(100%, 36rem); max-height: min(80dvh, 34rem); }
     
     .dialog-head { padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; border-bottom: 1px solid var(--color-divider); flex-shrink: 0; background: var(--color-surface); }
     .dialog-head h4 { font-size: 1.75rem; font-family: var(--font-display); font-weight: 500; display: flex; align-items: center; gap: 8px; margin: 0; }
     
-    .dialog-content-scroll { overflow-y: auto; flex-grow: 1; display: flex; flex-direction: column; padding-bottom: 2rem; }
+    .dialog-content-scroll { overflow-y: auto; flex-grow: 1; display: flex; flex-direction: column; padding-bottom: 2rem; scroll-behavior: smooth; }
     
     .dialog-tools { padding: 1.25rem 1.5rem; display: grid; gap: 1rem; border-bottom: 1px solid var(--color-divider); }
     .import-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
@@ -181,18 +181,22 @@
     .panel h5 { font-size: 0.875rem; text-transform: uppercase; letter-spacing: .08em; color: var(--color-primary); margin-bottom: 1rem; }
     .stack { display: grid; gap: 0.75rem; }
     
+    /* Category Dropdown in Queue */
+    .queue-category-select {
+       background: color-mix(in oklab, var(--color-bg) 50%, var(--color-surface));
+       border: 1px solid color-mix(in oklab, var(--color-text) 15%, transparent);
+       color: var(--color-text); border-radius: 0.5rem; padding: 0.35rem 0.5rem; font-weight: 600; font-size: 0.875rem;
+    }
+    .queue-category-select:focus { border-color: var(--color-primary); }
+
     .review-queue-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
-    .review-queue-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--color-surface); border: 1px solid var(--color-divider); border-radius: 1rem; font-size: 1rem; }
-    .review-queue-remove { color: var(--color-error); background: none; border: none; cursor: pointer; font-weight: bold; font-size: 1.25rem; padding: 4px; }
+    .review-queue-item { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 12px 16px; background: var(--color-surface); border: 1px solid var(--color-divider); border-radius: 1rem; font-size: 1rem; }
+    .review-queue-remove { color: var(--color-error); background: none; border: none; cursor: pointer; font-weight: bold; font-size: 1.25rem; padding: 4px; display: flex; align-items: center; justify-content: center; }
     
     .input { width: 100%; padding: 1rem 1.25rem; border-radius: 1rem; border: 1px solid color-mix(in oklab, var(--color-text) 15%, transparent); background: var(--color-bg); font-size: 1rem; transition: border-color 0.2s; }
     .input:focus { border-color: var(--color-primary); }
     .data-row { display: flex; justify-content: space-between; gap: 0.75rem; align-items: center; padding: 1rem 1.25rem; border: 1px solid color-mix(in oklab, var(--color-text) 5%, transparent); border-radius: 1rem; background: color-mix(in oklab, var(--color-bg) 50%, var(--color-surface)); font-size: 1rem; }
     
-    @media (max-width: 700px) {
-      .import-grid { grid-template-columns: 1fr; }
-      .console-grid { grid-template-columns: 1fr; }
-    }
   </style>
 </head>
 <body>
@@ -212,7 +216,7 @@
         <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle theme">
           <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
         </button>
-        <button class="ghost-btn" type="button" id="openDataBtn">
+        <button class="ghost-btn" style="border-radius: 2rem;" type="button" id="openDataBtn">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
           CookBook
         </button>
@@ -225,9 +229,15 @@
           <h2 id="hero-title">Plan Your Day</h2>
         </div>
         <div class="stats">
-          <article class="stat" style="cursor:pointer;" data-open-cookbook="breakfast"><span class="subtle">Breakfast</span><strong id="countBreakfast">0</strong></article>
-          <article class="stat" style="cursor:pointer;" data-open-cookbook="lunch"><span class="subtle">Lunch</span><strong id="countLunch">0</strong></article>
-          <article class="stat" style="cursor:pointer;" data-open-cookbook="dinner"><span class="subtle">Dinner</span><strong id="countDinner">0</strong></article>
+          <article class="stat" data-open-cookbook="breakfast">
+            <span class="subtle">Breakfast</span><strong id="countBreakfast">0</strong>
+          </article>
+          <article class="stat" data-open-cookbook="lunch">
+            <span class="subtle">Lunch</span><strong id="countLunch">0</strong>
+          </article>
+          <article class="stat" data-open-cookbook="dinner">
+            <span class="subtle">Dinner</span><strong id="countDinner">0</strong>
+          </article>
         </div>
       </section>
 
@@ -242,15 +252,17 @@
   </div>
 
   <div class="bottom-console">
-    <div class="console-grid">
-      <button id="fridgeBtn" class="icon-btn" style="width: 100%; border-radius: 1.5rem; background: var(--color-surface-offset);" type="button">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg> Fridge Match
+    <div class="console-left">
+      <button id="fridgeBtn" class="icon-btn" style="border-radius: 50%; width: 56px; height: 56px; background: var(--color-surface-offset);" type="button" title="Fridge Match">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
       </button>
-      <button id="surpriseBtn" class="accent-btn" style="border-radius: 1.5rem;" type="button">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg> Chef Special
+    </div>
+    <div class="console-right">
+      <button id="surpriseBtn" class="accent-btn" style="border-radius: 2rem; min-height: 56px;" type="button">
+        Chef Special
       </button>
-      <button id="generateBtn" class="primary-btn" type="button" style="font-size: 1.125rem; border-radius: 1.5rem; grid-column: span 1;">
-        <span style="font-size:1.4rem; line-height:1;">🎲</span> Plan
+      <button id="generateBtn" class="primary-btn" type="button" style="border-radius: 2rem; min-height: 56px; padding: 0.75rem 1.5rem;">
+        <span style="font-size:1.4rem; line-height:1; margin-right:4px;">🎲</span> Plan
       </button>
     </div>
   </div>
@@ -265,7 +277,7 @@
         <button class="icon-btn" style="border-radius: 50%;" id="closeDataBtn" type="button">✕</button>
       </div>
       
-      <div class="dialog-content-scroll">
+      <div class="dialog-content-scroll" id="cookBookScrollArea">
         <div class="dialog-tools">
           <div class="import-grid">
             <label class="import-label" for="fileUploadInput">Upload Document</label>
@@ -332,7 +344,7 @@
   </div>
 
   <script>
-    // --- EXACT JAVASCRIPT PRESERVED ---
+    // --- EXACT JAVASCRIPT LOGIC PRESERVED ---
     const GOOGLE_SHEETS_API_URL = "https://script.google.com/macros/s/AKfycbwnw_zAY55dbbvcyE1jxCVa6PKHcnYbwC6s0XPMPWupzX9GK0jZDZUmK2W0HXbCXVQ0rQ/exec";
 
     (() => {
@@ -405,11 +417,13 @@
       uploadStatus: document.getElementById('uploadStatus'),
       tableSections: document.getElementById('tableSections'),
       reviewQueuePanel: document.getElementById('reviewQueuePanel'),
-      reviewQueueList: document.getElementById('reviewQueueList')
+      reviewQueueList: document.getElementById('reviewQueueList'),
+      cookBookScrollArea: document.getElementById('cookBookScrollArea')
     };
 
     let pendingApprovals = [];
 
+    // Renders the queue with Dropdown Category Switcher
     function renderReviewQueue() {
       els.reviewQueueList.innerHTML = '';
       if (pendingApprovals.length === 0) {
@@ -421,12 +435,29 @@
         const li = document.createElement('li');
         li.className = 'review-queue-item';
         li.innerHTML = `
-          <span><strong>${item.category.toUpperCase()}:</strong> ${escapeHtml(item.meal)}</span>
-          <button class="review-queue-remove" data-remove-queue="${idx}">✕</button>
+          <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; flex-grow:1;">
+            <select class="queue-category-select" data-queue-index="${idx}">
+              <option value="breakfast" ${item.category === 'breakfast' ? 'selected' : ''}>Breakfast</option>
+              <option value="lunch" ${item.category === 'lunch' ? 'selected' : ''}>Lunch</option>
+              <option value="dinner" ${item.category === 'dinner' ? 'selected' : ''}>Dinner</option>
+            </select>
+            <span style="font-weight:500;">${escapeHtml(item.meal)}</span>
+          </div>
+          <button class="review-queue-remove" data-remove-queue="${idx}">
+             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
         `;
         els.reviewQueueList.appendChild(li);
       });
     }
+
+    // Event listeners for Queue Management
+    document.addEventListener('change', e => {
+       if (e.target.classList.contains('queue-category-select')) {
+          const idx = Number(e.target.dataset.queueIndex);
+          pendingApprovals[idx].category = e.target.value;
+       }
+    });
 
     document.addEventListener('click', e => {
       const rmBtn = e.target.closest('[data-remove-queue]');
@@ -434,25 +465,9 @@
         const idx = Number(rmBtn.dataset.removeQueue);
         pendingApprovals.splice(idx, 1);
         renderReviewQueue();
-        
-        document.querySelectorAll('[data-action="save-db"]').forEach(btn => {
-            btn.classList.remove('added');
-            btn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> Add to Cookbook`;
-        });
+        renderOutputDeck(state.currentSuggestions); // Re-render main deck to reset bookmark icons accurately
       }
     });
-
-    function queueMealForApproval(category, mealName) {
-      const normalized = normalizeSuggestionToMealName(mealName);
-      const lowName = normalized.toLowerCase();
-      
-      if (state.db[category].some(m => m.toLowerCase() === lowName)) return false;
-      if (pendingApprovals.some(m => m.category === category && m.meal.toLowerCase() === lowName)) return false;
-      
-      pendingApprovals.push({ category, meal: normalized });
-      renderReviewQueue();
-      return true;
-    }
 
     async function submitQueueForApproval() {
       if (pendingApprovals.length === 0) return;
@@ -462,26 +477,32 @@
       btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> Syncing...`;
       
       try {
-        await fetch(GOOGLE_SHEETS_API_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify({ action: 'sync_meals', meals: pendingApprovals })
-        });
-        
-        pendingApprovals.forEach(item => { state.db[item.category].push(item.meal); });
-        dedupeDb();
-        refreshCounts();
-        renderSpreadsheetModal();
+        const url = new URL(GOOGLE_SHEETS_API_URL);
+        url.searchParams.append('action', 'sync_meals');
+        url.searchParams.append('data', JSON.stringify(pendingApprovals));
 
-        pendingApprovals = [];
-        renderReviewQueue();
+        const response = await fetch(url.toString());
+        const result = await response.json();
         
-        btn.innerHTML = "✓ Synced successfully";
-        setTimeout(() => { btn.innerHTML = originalText; }, 2000);
+        if (result.success) {
+            pendingApprovals.forEach(item => { state.db[item.category].push(item.meal); });
+            dedupeDb();
+            refreshCounts();
+            renderSpreadsheetModal();
+
+            pendingApprovals = [];
+            renderReviewQueue();
+            renderOutputDeck(state.currentSuggestions); // Clear bookmark icons
+            
+            btn.innerHTML = "✓ Synced successfully";
+            setTimeout(() => { btn.innerHTML = originalText; }, 2000);
+        } else {
+            throw new Error(result.error || 'Sync Failed');
+        }
       } catch (err) {
         console.error('Failed to sync', err);
         btn.innerHTML = originalText;
+        alert('Sync failed. Please check connection and Apps Script deployment.');
       }
     }
 
@@ -515,8 +536,9 @@
       return source[Math.floor(Math.random() * source.length)];
     }
 
-    function buildCard(time, name, extra = {}) {
-      return { time, name, isLocked: !!extra.isLocked, cookedRecently: !!cookedWithinAWeek(name), history: extra.history || [name], historyIndex: extra.historyIndex !== undefined ? extra.historyIndex : 0 };
+    // Added source argument for smart Bookmark visibility
+    function buildCard(time, name, source, extra = {}) {
+      return { time, name, source, isLocked: !!extra.isLocked, cookedRecently: !!cookedWithinAWeek(name), history: extra.history || [name], historyIndex: extra.historyIndex !== undefined ? extra.historyIndex : 0 };
     }
 
     function logSingleMealSelection(mealName, timeOfDay) {
@@ -540,33 +562,49 @@
         const tag = getMealTag(item.name);
         const article = document.createElement('article');
         article.className = 'meal-card' + (item.isLocked ? ' locked' : '');
+        article.style.animationDelay = `${index * 0.08}s`; // Stagger effect
         
-        // Add staggering inline for Android 17 feel
-        article.style.animationDelay = `${index * 0.08}s`;
-        
+        // Smart Bookmark logic: Only render if not from 'db'
+        let bookmarkHTML = '';
+        if (item.source !== 'db') {
+           const rawTime = item.time.replace(/^[^a-zA-Z]+/, '').trim();
+           const category = rawTime.split(' ')[0].toLowerCase();
+           const normalized = normalizeSuggestionToMealName(item.name);
+           const isQueued = pendingApprovals.some(m => m.category === category && m.meal.toLowerCase() === normalized.toLowerCase());
+           
+           if (isQueued) {
+               bookmarkHTML = `<button class="bookmark-btn added" type="button" data-action="toggle-queue" data-index="${index}" title="Remove from Queue">
+                 <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+               </button>`;
+           } else {
+               bookmarkHTML = `<button class="bookmark-btn" type="button" data-action="toggle-queue" data-index="${index}" title="Add to Cookbook">
+                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>
+               </button>`;
+           }
+        }
+
         article.innerHTML = `
           <div class="meal-main">
             <div class="card-header-row">
               <div class="card-header-left">
                 <span class="eyebrow">${item.time}</span>
-                <span class="badge ${tag.cls}">${tag.text}</span>
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="badge ${tag.cls}">${tag.text}</span>
+                  ${item.cookedRecently ? '<span class="badge warning">Cooked recently</span>' : ''}
+                </div>
               </div>
               <div class="card-header-right">
-                 <button class="badge-btn" type="button" data-action="save-db" data-index="${index}">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg> 
-                  Add to Cookbook
-                </button>
+                 ${bookmarkHTML}
               </div>
             </div>
             
             <div class="meal-title">${escapeHtml(item.name)}</div>
-            ${item.cookedRecently ? '<div style="margin-bottom:0.5rem;"><span class="badge warning">Cooked in last 7 days</span></div>' : ''}
             
             <div class="nav-buttons-row">
-              <button class="card-action" type="button" data-action="prev" data-index="${index}" ${item.historyIndex > 0 && !item.isLocked ? '' : 'disabled'}>
+              <button class="card-action" style="padding:1rem;" type="button" data-action="prev" data-index="${index}" ${item.historyIndex > 0 && !item.isLocked ? '' : 'disabled'}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="11 17 6 12 11 7"></polyline><polyline points="18 17 13 12 18 7"></polyline></svg> Prev
               </button>
-              <button class="card-action" type="button" data-action="next" data-index="${index}" ${item.isLocked ? 'disabled' : ''}>
+              <button class="card-action" style="padding:1rem;" type="button" data-action="next" data-index="${index}" ${item.isLocked ? 'disabled' : ''}>
                 Next <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg>
               </button>
             </div>
@@ -610,7 +648,7 @@
       const breakfast = pickUniqueMeal(state.db.breakfast, used); used.push(breakfast);
       const lunch = pickUniqueMeal(state.db.lunch, used); used.push(lunch);
       const dinner = pickUniqueMeal(state.db.dinner, used);
-      renderOutputDeck([ buildCard('Breakfast', breakfast), buildCard('Lunch', lunch), buildCard('Dinner', dinner) ]);
+      renderOutputDeck([ buildCard('Breakfast', breakfast, 'db'), buildCard('Lunch', lunch, 'db'), buildCard('Dinner', dinner, 'db') ]);
     }
 
     async function runFridgeMatchingPipeline() {
@@ -630,9 +668,9 @@
       window.open(`https://www.youtube.com/results?search_query=${searchQ}`, '_blank', 'noopener,noreferrer');
 
       const deck = [];
-      if (bMatches.length > 0) deck.push(buildCard('Breakfast', bMatches[Math.floor(Math.random() * bMatches.length)]));
-      if (lMatches.length > 0) deck.push(buildCard('Lunch', lMatches[Math.floor(Math.random() * lMatches.length)]));
-      if (dMatches.length > 0) deck.push(buildCard('Dinner', dMatches[Math.floor(Math.random() * dMatches.length)]));
+      if (bMatches.length > 0) deck.push(buildCard('Breakfast', bMatches[Math.floor(Math.random() * bMatches.length)], 'db'));
+      if (lMatches.length > 0) deck.push(buildCard('Lunch', lMatches[Math.floor(Math.random() * lMatches.length)], 'db'));
+      if (dMatches.length > 0) deck.push(buildCard('Dinner', dMatches[Math.floor(Math.random() * dMatches.length)], 'db'));
 
       if (deck.length > 0) {
          renderOutputDeck(deck);
@@ -649,6 +687,19 @@
     async function refreshSpecificCategoryCard(index, direction = 'next') {
       const card = state.currentSuggestions[index];
       if (!card || card.isLocked) return;
+
+      const isInternet = card.source === 'internet';
+
+      // Smart Next Logic: If it's an internet card, fetch from internet directly
+      if (direction === 'next' && isInternet) {
+        const newMealName = await fetchSurpriseMealFromInternet();
+        card.history.push(newMealName);
+        card.historyIndex++;
+        card.name = newMealName;
+        card.cookedRecently = !!cookedWithinAWeek(newMealName);
+        renderOutputDeck(state.currentSuggestions);
+        return;
+      }
 
       if (direction === 'prev') {
         if (card.historyIndex > 0) {
@@ -668,16 +719,11 @@
         return;
       }
 
-      const cleanKey = card.time.split(' ')[0].toLowerCase();
+      // Default DB fallback logic
+      const cleanKey = card.time.replace(/^[^a-zA-Z]+/, '').trim().split(' ')[0].toLowerCase();
       const used = state.currentSuggestions.filter((_, i) => i !== index).map(item => item.name);
       
-      let newMealName;
-      if (card.time.includes('Internet')) {
-        newMealName = await fetchSurpriseMealFromInternet();
-      } else {
-        newMealName = pickUniqueMeal(state.db[cleanKey], used);
-      }
-      
+      let newMealName = pickUniqueMeal(state.db[cleanKey], used);
       card.history.push(newMealName);
       card.historyIndex++;
       card.name = newMealName;
@@ -721,6 +767,7 @@
       categories.forEach(category => {
         const section = document.createElement('section');
         section.className = 'panel data-section';
+        section.setAttribute('data-section', category);
         const title = document.createElement('h5');
         title.textContent = `${category.toUpperCase()} · ${state.db[category].length}`;
         section.appendChild(title);
@@ -745,7 +792,14 @@
       ['breakfast','lunch','dinner'].forEach(key => {
         const input = document.getElementById(`unified-${key}`);
         const value = input.value.trim();
-        if (value) { queueMealForApproval(key, value); input.value = ''; }
+        if (value) { 
+           if(!state.db[key].some(m => m.toLowerCase() === value.toLowerCase()) && 
+              !pendingApprovals.some(m => m.category === key && m.meal.toLowerCase() === value.toLowerCase())) {
+               pendingApprovals.push({ category: key, meal: value });
+               renderReviewQueue();
+           }
+           input.value = ''; 
+        }
       });
     }
 
@@ -833,9 +887,9 @@
     document.getElementById('submitApprovalBtn').addEventListener('click', submitQueueForApproval);
     
     document.getElementById('surpriseBtn').addEventListener('click', async function() {
-      els.suggestions.innerHTML = '<div class="empty"><h3>Fetching global inspirations...</h3></div>';
+      els.suggestions.innerHTML = '<div class="empty"><h3>Fetching inspirations...</h3></div>';
       const [b, l, d] = await Promise.all([ fetchSurpriseMealFromInternet(), fetchSurpriseMealFromInternet(), fetchSurpriseMealFromInternet() ]);
-      renderOutputDeck([ buildCard("Breakfast", b), buildCard("Lunch", l), buildCard("Dinner", d) ]);
+      renderOutputDeck([ buildCard("Breakfast", b, 'internet'), buildCard("Lunch", l, 'internet'), buildCard("Dinner", d, 'internet') ]);
     });
 
     document.getElementById('fridgeBtn').addEventListener('click', () => openModal(els.fridgeModal));
@@ -874,33 +928,52 @@
          window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
       }
 
-      if (button.dataset.action === 'save-db') {
+      // Bookmark Toggle Logic
+      if (button.dataset.action === 'toggle-queue') {
         const card = state.currentSuggestions[index];
-        const category = card.time.split(' ')[0].toLowerCase();
+        const rawTime = card.time.replace(/^[^a-zA-Z]+/, '').trim();
+        const category = rawTime.split(' ')[0].toLowerCase();
         const normalized = normalizeSuggestionToMealName(card.name);
         
-        if (normalized && normalized.length > 2) {
-           const success = queueMealForApproval(category, normalized);
-           if (success) {
-               button.classList.add('added');
-               button.innerHTML = `✓ Added`;
+        if (!normalized || normalized.length < 3 || !['breakfast','lunch','dinner'].includes(category)) return;
+
+        const qIndex = pendingApprovals.findIndex(m => m.category === category && m.meal.toLowerCase() === normalized.toLowerCase());
+        
+        if (qIndex > -1) {
+           // Remove from Queue
+           pendingApprovals.splice(qIndex, 1);
+           button.classList.remove('added');
+           button.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>`;
+        } else {
+           // Add to Queue
+           if (state.db[category].some(m => m.toLowerCase() === normalized.toLowerCase())) {
+               alert("Already in database!");
+               return;
            }
+           pendingApprovals.push({ category, meal: normalized });
+           button.classList.add('added');
+           button.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>`;
         }
+        renderReviewQueue();
       }
     });
 
     [els.dataModal, els.fridgeModal].forEach(modal => modal.addEventListener('click', event => { if (event.target === modal) closeModal(modal); }));
     
-    // Jump straight to CookBook categories from stats
+    // Deep Linking: Jump straight to CookBook categories from stats
     document.querySelectorAll('[data-open-cookbook]').forEach(stat => {
       stat.addEventListener('click', () => {
         const category = stat.dataset.openCookbook;
         openModal(els.dataModal);
         renderSpreadsheetModal();
+        // Allow time for modal open animation
         setTimeout(() => {
           const target = els.tableSections.querySelector(`[data-section="${category}"]`);
-          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 100);
+          if (target && els.cookBookScrollArea) {
+             const topPos = target.offsetTop;
+             els.cookBookScrollArea.scrollTo({ top: topPos - 20, behavior: 'smooth' });
+          }
+        }, 150);
       });
     });
 
