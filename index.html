@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Meal Sync Pro</title>
-  <meta name="theme-color" content="#171614" />
+  <meta name="theme-color" content="#000000" />
   <link rel="manifest" href="/Meal-generator/manifest.json">
   <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&f[]=boska@400,500,700&display=swap" rel="stylesheet">
   <script defer src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
@@ -12,45 +12,67 @@
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <style>
-    /* MATERIAL YOU / ANDROID 17 DESIGN TOKENS */
     :root, [data-theme="light"] {
-      --color-bg: #f7f6f2; --color-surface: #f9f8f5; --color-surface-2: #fbfbf9; --color-surface-offset: #f3f0ec;
-      --color-divider: #dcd9d5; --color-text: #28251d; --color-text-muted: #7a7974; 
-      --color-primary: #01696f; --color-secondary: #e8af34; --color-success: #437a22; --color-warning: #da7101; --color-error: #a12c7b;
-      --radius-btn: 2rem; --radius-xl: 1.25rem; --radius-2xl: 1.75rem;
+      --color-bg: #ffffff; --color-surface: #f7f6f2; --color-surface-2: #f2f1ed; --color-surface-offset: #ebeae6;
+      --color-divider: #e0deda; --color-text: #161514; --color-text-muted: #6b6965; 
+      --color-primary: #01696f; --color-secondary: #e8af34; --color-success: #38661c; --color-warning: #c26502; --color-error: #8f266d;
+      --radius-btn: 2rem; --radius-xl: 1.5rem; --radius-2xl: 2rem;
       --shadow-sm: 0 4px 12px oklch(0.2 0.01 80 / 0.04); --shadow-md: 0 12px 32px oklch(0.2 0.01 80 / 0.08);
       --font-body: 'General Sans', Inter, sans-serif; --font-display: 'Boska', Georgia, serif;
       --ease-android: cubic-bezier(0.2, 0, 0, 1);
+      --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
     }
+    
     [data-theme="dark"] {
-      --color-bg: #171614; --color-surface: #1e1d1b; --color-surface-2: #242320; --color-surface-offset: #2a2825; 
-      --color-border: #393836; --color-divider: #32302d; --color-text: #e0dfdc; --color-text-muted: #9a9996; 
-      --color-primary: #5cb2be; --shadow-sm: 0 4px 12px oklch(0 0 0 / 0.3); --shadow-md: 0 16px 40px oklch(0 0 0 / 0.5);
+      /* AMOLED TRUE BLACK THEME */
+      --color-bg: #000000; 
+      --color-surface: #121110; 
+      --color-surface-2: #1a1918; 
+      --color-surface-offset: #22201e; 
+      --color-border: rgba(255, 255, 255, 0.05); 
+      --color-divider: rgba(255, 255, 255, 0.08); 
+      --color-text: #e8e6e3; 
+      --color-text-muted: #918f8b; 
+      
+      /* Desaturated Pastels for AMOLED */
+      --color-primary: #80c7d2; 
+      --color-secondary: #e6c57a; 
+      --color-success: #78a85d; 
+      --color-warning: #e39d5b; 
+      --color-error: #c975ae;
+      
+      --shadow-sm: 0 8px 24px rgba(0,0,0, 0.8); 
+      --shadow-md: 0 16px 40px rgba(0,0,0, 1);
     }
     
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     html { scroll-behavior: smooth; }
     body { 
       min-height: 100dvh; font-family: var(--font-body); font-size: 1rem; line-height: 1.6; 
-      background: radial-gradient(circle at top, color-mix(in oklab, var(--color-primary) 10%, transparent), transparent 40%), var(--color-bg); 
-      color: var(--color-text); overflow-x: hidden; 
+      background: var(--color-bg); color: var(--color-text); overflow-x: hidden; 
     }
     button, input, select { font: inherit; color: inherit; outline: none; }
     button { cursor: pointer; border: none; background: none; }
     
-    /* EDGE TO EDGE LAYOUT */
-    .shell { 
-      width: min(100% - 1.5rem, 70rem); margin: 0 auto; 
-      padding: clamp(1rem, 4vw, 2rem) 0.5rem calc(10rem + env(safe-area-inset-bottom)); 
+    /* EDGE TO EDGE TOP BLUR HEADER */
+    .topbar-wrapper {
+      position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 70rem;
+      padding: 1.5rem 1rem 1rem; z-index: 40; display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      background: linear-gradient(to bottom, color-mix(in oklab, var(--color-bg) 80%, transparent), transparent);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      mask-image: linear-gradient(to bottom, black 60%, transparent); -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent);
     }
     
-    /* HEADER */
-    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 2rem; }
+    .shell { 
+      width: min(100%, 70rem); margin: 0 auto; 
+      padding: clamp(6rem, 8vw, 7rem) 0.75rem calc(10rem + env(safe-area-inset-bottom)); 
+    }
+    
     .brand { display: flex; align-items: center; gap: 0.75rem; }
     .brand-logo { 
       width: 2.75rem; height: 2.75rem; border-radius: 1rem; display: grid; place-items: center; 
       background: linear-gradient(135deg, var(--color-primary), color-mix(in oklab, var(--color-primary) 40%, var(--color-secondary))); 
-      color: #fff; box-shadow: var(--shadow-md); 
+      color: #000; box-shadow: var(--shadow-sm); 
     }
     h1 { font-family: var(--font-display); font-size: 1.75rem; font-weight: 600; line-height: 1; letter-spacing: -0.02em; }
     .header-actions { display: flex; gap: 0.5rem; align-items: center; }
@@ -60,18 +82,18 @@
       min-height: 52px; border-radius: var(--radius-btn); transition: all 0.2s var(--ease-android); 
       display: flex; align-items: center; justify-content: center; gap: 8px; font-weight: 600; 
     }
-    button:active, .card-action:active, .bookmark-btn:active { transform: scale(0.95); }
+    button:active, .card-action:active, .bookmark-btn:active, .stat:active { transform: scale(0.94); }
     
-    .icon-btn { width: 52px; border: 1px solid color-mix(in oklab, var(--color-text) 8%, transparent); background: var(--color-surface); }
+    .icon-btn { width: 52px; border: 1px solid var(--color-border); background: var(--color-surface); }
     .primary-btn, .accent-btn, .success-btn, .ghost-btn { padding: 0.75rem 1.5rem; }
-    .ghost-btn { background: var(--color-surface); border: 1px solid color-mix(in oklab, var(--color-text) 8%, transparent); }
+    .ghost-btn { background: var(--color-surface); border: 1px solid var(--color-border); }
     .primary-btn { background: var(--color-primary); color: var(--color-bg); }
-    .accent-btn { background: var(--color-secondary); color: #1a1406; }
-    .success-btn { background: var(--color-success); color: #fff; }
+    .accent-btn { background: var(--color-secondary); color: var(--color-bg); }
+    .success-btn { background: var(--color-success); color: var(--color-bg); }
     
     /* STATS & HERO */
     .hero { margin-bottom: 2rem; }
-    .hero-grid { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1rem; }
+    .hero-grid { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1rem; padding: 0 0.5rem; }
     .hero h2 { font-family: var(--font-display); font-size: 2.5rem; line-height: 1; font-weight: 500; margin: 0; letter-spacing: -0.02em; }
     .subtle { color: var(--color-text-muted); font-size: 0.875rem; }
     
@@ -79,27 +101,26 @@
     .stats::-webkit-scrollbar { display: none; }
     .stat { 
       flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: pointer;
-      padding: 0.875rem; background: var(--color-surface-2); border-radius: 1.25rem; 
-      border: 1px solid color-mix(in oklab, var(--color-text) 5%, transparent); min-width: 90px;
-      transition: all 0.2s var(--ease-android);
+      padding: 1rem 0.875rem; background: var(--color-surface); border-radius: 1.5rem; 
+      border: 1px solid var(--color-border); min-width: 100px;
+      transition: all 0.2s var(--ease-android); box-shadow: var(--shadow-sm);
     }
-    .stat:active { transform: scale(0.95); background: var(--color-surface-offset); }
-    .stat strong { font-size: 1.25rem; margin: 0; font-weight: 700; }
-    .stat .subtle { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; margin: 0; }
+    .stat strong { font-size: 1.5rem; margin: 0; font-weight: 700; font-family: var(--font-display); }
+    .stat .subtle { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin: 0; }
     
     /* STAGGERED FLUID CARDS */
     @keyframes slideUpFade {
-      0% { opacity: 0; transform: translateY(40px) scale(0.97); }
+      0% { opacity: 0; transform: translateY(50px) scale(0.96); }
       100% { opacity: 1; transform: translateY(0) scale(1); }
     }
     
     .cards { display: grid; gap: 1.5rem; }
     .meal-card { 
-      background: var(--color-surface); border: 1px solid color-mix(in oklab, var(--color-text) 6%, transparent); 
-      border-radius: var(--radius-2xl); overflow: hidden; box-shadow: var(--shadow-sm); 
-      display: flex; flex-direction: column; animation: slideUpFade 0.6s var(--ease-android) backwards; 
+      background: var(--color-surface); border: 1px solid var(--color-border); 
+      border-radius: var(--radius-2xl); overflow: hidden; box-shadow: var(--shadow-md); 
+      display: flex; flex-direction: column; animation: slideUpFade 0.7s var(--ease-spring) backwards; 
     }
-    .meal-card.locked { border-color: var(--color-success); box-shadow: 0 0 0 2px var(--color-success); }
+    .meal-card.locked { border-color: color-mix(in oklab, var(--color-success) 50%, transparent); box-shadow: 0 0 20px color-mix(in oklab, var(--color-success) 10%, transparent); }
     .meal-main { padding: 1.5rem; display: grid; gap: 0.5rem; }
     
     .card-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
@@ -107,122 +128,137 @@
     .eyebrow { font-size: 0.8rem; letter-spacing: .12em; text-transform: uppercase; color: var(--color-text-muted); font-weight: 700; }
     
     .badge { padding: 0.35rem 0.875rem; border-radius: 2rem; font-size: 0.75rem; font-weight: 700; white-space: nowrap; display: inline-block; }
-    .tag-veg { background: color-mix(in oklab, var(--color-success) 15%, transparent); color: var(--color-success); }
-    .tag-egg { background: color-mix(in oklab, var(--color-secondary) 20%, transparent); color: #d97706; }
-    .tag-nonveg { background: color-mix(in oklab, var(--color-error) 15%, transparent); color: var(--color-error); }
+    .tag-veg { background: color-mix(in oklab, var(--color-success) 15%, transparent); color: var(--color-success); border: 1px solid color-mix(in oklab, var(--color-success) 20%, transparent); }
+    .tag-egg { background: color-mix(in oklab, var(--color-secondary) 15%, transparent); color: var(--color-secondary); border: 1px solid color-mix(in oklab, var(--color-secondary) 20%, transparent); }
+    .tag-nonveg { background: color-mix(in oklab, var(--color-error) 15%, transparent); color: var(--color-error); border: 1px solid color-mix(in oklab, var(--color-error) 20%, transparent); }
     
     /* TOGGLE BOOKMARK BUTTON */
     .bookmark-btn {
-      width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-      background: var(--color-surface-offset); border: 1px solid color-mix(in oklab, var(--color-text) 8%, transparent);
-      color: var(--color-text); transition: all 0.2s var(--ease-android); cursor: pointer; flex-shrink: 0;
+      width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      background: var(--color-surface-2); border: 1px solid var(--color-border);
+      color: var(--color-text); transition: all 0.3s var(--ease-spring); cursor: pointer; flex-shrink: 0;
     }
-    .bookmark-btn.added { background: var(--color-success); color: #fff; border-color: var(--color-success); }
+    .bookmark-btn.added { background: color-mix(in oklab, var(--color-success) 20%, transparent); color: var(--color-success); border-color: var(--color-success); }
 
-    .meal-title { font-size: clamp(1.8rem, 6vw, 2.6rem); line-height: 1.1; font-family: var(--font-display); font-weight: 600; color: var(--color-text); letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+    .meal-title { font-size: clamp(2rem, 7vw, 2.8rem); line-height: 1.05; font-family: var(--font-display); font-weight: 600; color: var(--color-text); letter-spacing: -0.03em; margin-bottom: 0.5rem; }
     
     .nav-buttons-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: auto; }
     
     .card-action { 
-      min-height: 52px; font-weight: 600; font-size: 1rem; border: none; border-radius: 1.25rem; 
-      background: var(--color-surface-offset); color: var(--color-text); cursor: pointer; 
+      min-height: 52px; font-weight: 600; font-size: 1rem; border: 1px solid var(--color-border); border-radius: 1.25rem; 
+      background: var(--color-surface-2); color: var(--color-text); cursor: pointer; 
       transition: all 0.2s var(--ease-android); display: flex; align-items: center; justify-content: center; gap: 8px; padding: 0.5rem 1rem; 
     }
     .card-action:disabled { opacity: 0.4; cursor: not-allowed; }
-    .card-action.locked { background: var(--color-success) !important; color: #fff !important; }
+    .card-action.locked { background: var(--color-success) !important; color: var(--color-bg) !important; border-color: var(--color-success) !important; }
     
     .main-actions-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; padding: 0 1.5rem 1.5rem; }
-    .explore-area { display: none; grid-template-columns: 1fr 1fr; gap: 0.75rem; padding: 0 1.5rem 1.5rem; border-top: 1px solid var(--color-divider); margin-top: -0.5rem; padding-top: 1.5rem; }
     
-    .empty { padding: 2.5rem; text-align: left; background: var(--color-surface); border-radius: var(--radius-2xl); border: 1px dashed color-mix(in oklab, var(--color-text) 15%, transparent); color: var(--color-text-muted); font-size: 1.125rem; }
-    .empty h3 { color: var(--color-text); margin-bottom: 0.5rem; font-family: var(--font-display); font-size: 1.75rem; line-height: 1.2; }
+    /* FLUID MICRO-CHIP EXPLORE DRAWER */
+    .explore-area { 
+      display: flex; flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; gap: 0.75rem; 
+      padding: 0 1.5rem; max-height: 0; opacity: 0; margin-top: -0.5rem;
+      transition: all 0.5s var(--ease-spring); border-top: 1px solid transparent; 
+    }
+    .explore-area::-webkit-scrollbar { display: none; }
+    .explore-area.open { 
+      max-height: 120px; opacity: 1; border-top-color: var(--color-divider); padding-top: 1.5rem; padding-bottom: 1.5rem; margin-top: 0; 
+    }
+    .explore-area .card-action { 
+      flex-shrink: 0; min-height: 48px; border-radius: 2rem; font-size: 0.9rem; padding: 0.5rem 1.25rem; white-space: nowrap; 
+    }
     
-    /* GOOGLE PHOTOS STYLE FLOATING NAV */
+    .empty { padding: 3rem 2rem; text-align: left; background: var(--color-surface); border-radius: var(--radius-2xl); border: 1px solid var(--color-border); color: var(--color-text-muted); font-size: 1.125rem; }
+    .empty h3 { color: var(--color-text); margin-bottom: 0.5rem; font-family: var(--font-display); font-size: 2rem; line-height: 1.1; letter-spacing: -0.02em; }
+    
+    /* FLOATING BOTTOM CONSOLE */
     .bottom-console {
       position: fixed; left: 50%; bottom: calc(1.5rem + env(safe-area-inset-bottom)); transform: translateX(-50%);
       width: calc(100% - 1.5rem); max-width: 600px; padding: 0.5rem;
-      background: color-mix(in oklab, var(--color-surface) 85%, transparent);
-      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
-      border: 1px solid color-mix(in oklab, var(--color-text) 8%, transparent);
+      background: color-mix(in oklab, var(--color-surface) 75%, transparent);
+      backdrop-filter: blur(32px) saturate(150%); -webkit-backdrop-filter: blur(32px) saturate(150%);
+      border: 1px solid var(--color-border);
       border-radius: 3rem; z-index: 20; box-shadow: var(--shadow-md);
-      display: flex; justify-content: space-between; align-items: center;
+      display: flex; justify-content: space-between; align-items: center; gap: 0.5rem;
     }
     .console-left { display: flex; }
     .console-right { display: flex; gap: 0.5rem; flex-grow: 1; justify-content: flex-end; }
     
     /* MODALS */
     .modal { 
-      position: fixed; inset: 0; background: color-mix(in oklab, #000 70%, transparent); 
+      position: fixed; inset: 0; background: color-mix(in oklab, #000 85%, transparent); 
       display: none; align-items: center; justify-content: center; padding: 1rem; z-index: 50; 
-      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); 
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); 
       opacity: 0; transition: opacity 0.3s var(--ease-android); 
     }
     .modal.open { display: flex; opacity: 1; }
     .dialog { 
       width: min(100%, 40rem); max-height: min(90dvh, 56rem); overflow: hidden; background: var(--color-surface); 
-      border: 1px solid color-mix(in oklab, var(--color-text) 8%, transparent); border-radius: 2rem; box-shadow: var(--shadow-md); 
-      display: flex; flex-direction: column; transform: scale(0.95) translateY(20px); transition: all 0.3s var(--ease-android); 
+      border: 1px solid var(--color-border); border-radius: 2.5rem; box-shadow: var(--shadow-md); 
+      display: flex; flex-direction: column; transform: scale(0.95) translateY(30px); transition: all 0.4s var(--ease-spring); 
     }
     .modal.open .dialog { transform: scale(1) translateY(0); }
     
-    .dialog-head { padding: 1.5rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; border-bottom: 1px solid var(--color-divider); flex-shrink: 0; background: var(--color-surface); }
-    .dialog-head h4 { font-size: 1.75rem; font-family: var(--font-display); font-weight: 500; display: flex; align-items: center; gap: 8px; margin: 0; }
+    .dialog-head { padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; border-bottom: 1px solid var(--color-divider); flex-shrink: 0; background: var(--color-surface); }
+    .dialog-head h4 { font-size: 1.75rem; font-family: var(--font-display); font-weight: 500; display: flex; align-items: center; gap: 12px; margin: 0; letter-spacing: -0.02em; }
     
     .dialog-content-scroll { overflow-y: auto; flex-grow: 1; display: flex; flex-direction: column; padding-bottom: 2rem; scroll-behavior: smooth; }
+    .dialog-content-scroll::-webkit-scrollbar { display: none; }
     
-    .dialog-tools { padding: 1.25rem 1.5rem; display: grid; gap: 1rem; border-bottom: 1px solid var(--color-divider); }
-    .import-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
-    .import-label { display: grid; place-items: center; gap: 0.25rem; padding: 1rem; text-align: center; background: var(--color-surface-2); border: 1px dashed color-mix(in oklab, var(--color-text) 15%, transparent); border-radius: 1.25rem; cursor: pointer; font-size: 0.875rem; transition: background 0.2s; }
+    .dialog-tools { padding: 1.5rem 2rem; display: grid; gap: 1.25rem; border-bottom: 1px solid var(--color-divider); }
+    .import-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    .import-label { display: grid; place-items: center; gap: 0.5rem; padding: 1.25rem; text-align: center; background: var(--color-surface-2); border: 1px dashed var(--color-border); border-radius: 1.5rem; cursor: pointer; font-size: 0.875rem; transition: background 0.2s; font-weight: 600; }
     .import-label:active { background: var(--color-surface-offset); }
     .hidden { display: none !important; }
     
-    .dialog-body { padding: 1.5rem; display: grid; gap: 1.5rem; }
-    .panel { padding: 1.5rem; background: var(--color-surface-2); border-radius: 1.5rem; border: 1px solid color-mix(in oklab, var(--color-text) 5%, transparent); }
-    .panel h5 { font-size: 0.875rem; text-transform: uppercase; letter-spacing: .08em; color: var(--color-primary); margin-bottom: 1rem; }
-    .stack { display: grid; gap: 0.75rem; }
+    .dialog-body { padding: 2rem; display: grid; gap: 2rem; }
+    .panel { padding: 1.5rem; background: var(--color-surface-2); border-radius: 2rem; border: 1px solid var(--color-border); }
+    .panel h5 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: .12em; color: var(--color-primary); margin-bottom: 1.25rem; font-weight: 700; }
+    .stack { display: grid; gap: 1rem; }
     
     /* Category Dropdown in Queue */
     .queue-category-select {
-       background: color-mix(in oklab, var(--color-bg) 50%, var(--color-surface));
-       border: 1px solid color-mix(in oklab, var(--color-text) 15%, transparent);
-       color: var(--color-text); border-radius: 0.5rem; padding: 0.35rem 0.5rem; font-weight: 600; font-size: 0.875rem;
+       background: var(--color-surface-offset);
+       border: 1px solid var(--color-border);
+       color: var(--color-text); border-radius: 1rem; padding: 0.5rem 0.75rem; font-weight: 600; font-size: 0.875rem;
     }
     .queue-category-select:focus { border-color: var(--color-primary); }
 
-    .review-queue-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
-    .review-queue-item { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 12px 16px; background: var(--color-surface); border: 1px solid var(--color-divider); border-radius: 1rem; font-size: 1rem; }
-    .review-queue-remove { color: var(--color-error); background: none; border: none; cursor: pointer; font-weight: bold; font-size: 1.25rem; padding: 4px; display: flex; align-items: center; justify-content: center; }
+    .review-queue-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+    .review-queue-item { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding: 12px 16px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 1.5rem; font-size: 1rem; }
+    .review-queue-remove { color: var(--color-error); background: color-mix(in oklab, var(--color-error) 15%, transparent); border-radius: 50%; width: 36px; height: 36px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+    .review-queue-remove:active { transform: scale(0.9); }
     
-    .input { width: 100%; padding: 1rem 1.25rem; border-radius: 1rem; border: 1px solid color-mix(in oklab, var(--color-text) 15%, transparent); background: var(--color-bg); font-size: 1rem; transition: border-color 0.2s; }
+    .input { width: 100%; padding: 1.125rem 1.5rem; border-radius: 1.25rem; border: 1px solid var(--color-border); background: var(--color-bg); font-size: 1rem; transition: border-color 0.2s; color: var(--color-text); }
     .input:focus { border-color: var(--color-primary); }
-    .data-row { display: flex; justify-content: space-between; gap: 0.75rem; align-items: center; padding: 1rem 1.25rem; border: 1px solid color-mix(in oklab, var(--color-text) 5%, transparent); border-radius: 1rem; background: color-mix(in oklab, var(--color-bg) 50%, var(--color-surface)); font-size: 1rem; }
+    .data-row { display: flex; justify-content: space-between; gap: 0.75rem; align-items: center; padding: 1rem 1.5rem; border: 1px solid var(--color-border); border-radius: 1.25rem; background: var(--color-surface); font-size: 1rem; }
     
   </style>
 </head>
 <body>
-  <div class="shell">
-    <header class="topbar">
-      <div class="brand">
-        <div class="brand-logo" aria-hidden="true">
-          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M5 6c3-2 11-2 14 0"/><path d="M7 10c2-1 8-1 10 0"/><path d="M12 4v16"/><path d="M9 18c0 1.7 1.3 2 3 2s3-.3 3-2"/>
-          </svg>
-        </div>
-        <div>
-          <h1>Meal Sync</h1>
-        </div>
+  <div class="topbar-wrapper">
+    <div class="brand">
+      <div class="brand-logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M5 6c3-2 11-2 14 0"/><path d="M7 10c2-1 8-1 10 0"/><path d="M12 4v16"/><path d="M9 18c0 1.7 1.3 2 3 2s3-.3 3-2"/>
+        </svg>
       </div>
-      <div class="header-actions">
-        <button class="icon-btn" type="button" data-theme-toggle aria-label="Toggle theme">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-        </button>
-        <button class="ghost-btn" style="border-radius: 2rem;" type="button" id="openDataBtn">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-          CookBook
-        </button>
+      <div>
+        <h1>Meal Sync</h1>
       </div>
-    </header>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" style="border-radius: 50%;" type="button" data-theme-toggle aria-label="Toggle theme">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+      </button>
+      <button class="ghost-btn" style="border-radius: 2rem;" type="button" id="openDataBtn">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        CookBook
+      </button>
+    </div>
+  </div>
 
+  <div class="shell">
     <main id="main">
       <section class="hero">
         <div class="hero-grid">
@@ -251,22 +287,24 @@
     </main>
   </div>
 
+  <!-- SPLIT FLOATING NAV BAR -->
   <div class="bottom-console">
     <div class="console-left">
-      <button id="fridgeBtn" class="icon-btn" style="border-radius: 50%; width: 56px; height: 56px; background: var(--color-surface-offset);" type="button" title="Fridge Match">
+      <button id="fridgeBtn" class="icon-btn" style="border-radius: 50%; width: 56px; height: 56px; background: var(--color-surface-offset); border-color: var(--color-border);" type="button" title="Fridge Match">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
       </button>
     </div>
     <div class="console-right">
-      <button id="surpriseBtn" class="accent-btn" style="border-radius: 2rem; min-height: 56px;" type="button">
+      <button id="surpriseBtn" class="accent-btn" style="border-radius: 3rem; min-height: 56px;" type="button">
         Chef Special
       </button>
-      <button id="generateBtn" class="primary-btn" type="button" style="border-radius: 2rem; min-height: 56px; padding: 0.75rem 1.5rem;">
+      <button id="generateBtn" class="primary-btn" type="button" style="border-radius: 3rem; min-height: 56px; padding: 0.75rem 1.5rem;">
         <span style="font-size:1.4rem; line-height:1; margin-right:4px;">🎲</span> Plan
       </button>
     </div>
   </div>
 
+  <!-- COOKBOOK MODAL -->
   <div id="dataModal" class="modal" aria-hidden="true">
     <section class="dialog">
       <div class="dialog-head">
@@ -287,7 +325,7 @@
           </div>
           <div id="uploadStatus" class="status" role="status"></div>
           <div class="toolbar-row">
-            <button id="exportExcelBtn" class="ghost-btn" type="button" style="width:100%; border-radius: 1rem;">Export Back-up (.xlsx)</button>
+            <button id="exportExcelBtn" class="ghost-btn" type="button" style="width:100%; border-radius: 1.5rem;">Export Back-up (.xlsx)</button>
           </div>
         </div>
         <div class="dialog-body">
@@ -295,7 +333,7 @@
           <section class="panel" id="reviewQueuePanel" style="display:none; border-color:var(--color-success); border-width: 2px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.25rem; flex-wrap:wrap; gap:12px;">
               <h5 style="margin:0; color:var(--color-success);">Pending Sync Queue</h5>
-              <button id="submitApprovalBtn" class="primary-btn" type="button" style="background: var(--color-success); color: #fff; border-radius: 1rem;">
+              <button id="submitApprovalBtn" class="primary-btn" type="button" style="background: var(--color-success); color: var(--color-bg); border-radius: 1.5rem;">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
                 Sync to Sheet
               </button>
@@ -310,7 +348,7 @@
                 <input class="input" id="unified-breakfast" placeholder="Breakfast item" />
                 <input class="input" id="unified-lunch" placeholder="Lunch item" />
                 <input class="input" id="unified-dinner" placeholder="Dinner item" />
-                <button id="saveUnifiedBtn" class="primary-btn" style="border-radius: 1rem;" type="button">Queue Entry</button>
+                <button id="saveUnifiedBtn" class="primary-btn" style="border-radius: 1.5rem;" type="button">Queue Entry</button>
               </div>
             </div>
             <div id="tableSections" class="stack"></div>
@@ -320,6 +358,7 @@
     </section>
   </div>
 
+  <!-- FRIDGE MODAL -->
   <div id="fridgeModal" class="modal" aria-hidden="true">
     <section class="dialog small">
       <div class="dialog-head">
@@ -335,7 +374,7 @@
             <h5>Ingredients</h5>
             <div class="stack">
               <input id="fridgeIngredientsInput" class="input" placeholder="Paneer, tomato, capsicum..." />
-              <button id="submitFridgeIngredientsBtn" class="success-btn" style="border-radius: 1rem;" type="button">Match ingredients</button>
+              <button id="submitFridgeIngredientsBtn" class="success-btn" style="border-radius: 1.5rem;" type="button">Match ingredients</button>
             </div>
           </div>
         </div>
@@ -344,7 +383,6 @@
   </div>
 
   <script>
-    // --- EXACT JAVASCRIPT LOGIC PRESERVED ---
     const GOOGLE_SHEETS_API_URL = "https://script.google.com/macros/s/AKfycbwnw_zAY55dbbvcyE1jxCVa6PKHcnYbwC6s0XPMPWupzX9GK0jZDZUmK2W0HXbCXVQ0rQ/exec";
 
     (() => {
@@ -423,7 +461,6 @@
 
     let pendingApprovals = [];
 
-    // Renders the queue with Dropdown Category Switcher
     function renderReviewQueue() {
       els.reviewQueueList.innerHTML = '';
       if (pendingApprovals.length === 0) {
@@ -435,23 +472,22 @@
         const li = document.createElement('li');
         li.className = 'review-queue-item';
         li.innerHTML = `
-          <div style="display:flex; align-items:center; gap:0.5rem; flex-wrap:wrap; flex-grow:1;">
+          <div style="display:flex; align-items:center; gap:0.75rem; flex-wrap:wrap; flex-grow:1;">
             <select class="queue-category-select" data-queue-index="${idx}">
               <option value="breakfast" ${item.category === 'breakfast' ? 'selected' : ''}>Breakfast</option>
               <option value="lunch" ${item.category === 'lunch' ? 'selected' : ''}>Lunch</option>
               <option value="dinner" ${item.category === 'dinner' ? 'selected' : ''}>Dinner</option>
             </select>
-            <span style="font-weight:500;">${escapeHtml(item.meal)}</span>
+            <span style="font-weight:600; font-family:var(--font-display); font-size:1.25rem;">${escapeHtml(item.meal)}</span>
           </div>
           <button class="review-queue-remove" data-remove-queue="${idx}">
-             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
           </button>
         `;
         els.reviewQueueList.appendChild(li);
       });
     }
 
-    // Event listeners for Queue Management
     document.addEventListener('change', e => {
        if (e.target.classList.contains('queue-category-select')) {
           const idx = Number(e.target.dataset.queueIndex);
@@ -465,9 +501,21 @@
         const idx = Number(rmBtn.dataset.removeQueue);
         pendingApprovals.splice(idx, 1);
         renderReviewQueue();
-        renderOutputDeck(state.currentSuggestions); // Re-render main deck to reset bookmark icons accurately
+        renderOutputDeck(state.currentSuggestions); 
       }
     });
+
+    function queueMealForApproval(category, mealName) {
+      const normalized = normalizeSuggestionToMealName(mealName);
+      const lowName = normalized.toLowerCase();
+      
+      if (state.db[category].some(m => m.toLowerCase() === lowName)) return false;
+      if (pendingApprovals.some(m => m.category === category && m.meal.toLowerCase() === lowName)) return false;
+      
+      pendingApprovals.push({ category, meal: normalized });
+      renderReviewQueue();
+      return true;
+    }
 
     async function submitQueueForApproval() {
       if (pendingApprovals.length === 0) return;
@@ -492,7 +540,7 @@
 
             pendingApprovals = [];
             renderReviewQueue();
-            renderOutputDeck(state.currentSuggestions); // Clear bookmark icons
+            renderOutputDeck(state.currentSuggestions); 
             
             btn.innerHTML = "✓ Synced successfully";
             setTimeout(() => { btn.innerHTML = originalText; }, 2000);
@@ -536,7 +584,6 @@
       return source[Math.floor(Math.random() * source.length)];
     }
 
-    // Added source argument for smart Bookmark visibility
     function buildCard(time, name, source, extra = {}) {
       return { time, name, source, isLocked: !!extra.isLocked, cookedRecently: !!cookedWithinAWeek(name), history: extra.history || [name], historyIndex: extra.historyIndex !== undefined ? extra.historyIndex : 0 };
     }
@@ -562,9 +609,8 @@
         const tag = getMealTag(item.name);
         const article = document.createElement('article');
         article.className = 'meal-card' + (item.isLocked ? ' locked' : '');
-        article.style.animationDelay = `${index * 0.08}s`; // Stagger effect
+        article.style.animationDelay = `${index * 0.1}s`;
         
-        // Smart Bookmark logic: Only render if not from 'db'
         let bookmarkHTML = '';
         if (item.source !== 'db') {
            const rawTime = item.time.replace(/^[^a-zA-Z]+/, '').trim();
@@ -601,10 +647,10 @@
             <div class="meal-title">${escapeHtml(item.name)}</div>
             
             <div class="nav-buttons-row">
-              <button class="card-action" style="padding:1rem;" type="button" data-action="prev" data-index="${index}" ${item.historyIndex > 0 && !item.isLocked ? '' : 'disabled'}>
+              <button class="card-action" type="button" data-action="prev" data-index="${index}" ${item.historyIndex > 0 && !item.isLocked ? '' : 'disabled'}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="11 17 6 12 11 7"></polyline><polyline points="18 17 13 12 18 7"></polyline></svg> Prev
               </button>
-              <button class="card-action" style="padding:1rem;" type="button" data-action="next" data-index="${index}" ${item.isLocked ? 'disabled' : ''}>
+              <button class="card-action" type="button" data-action="next" data-index="${index}" ${item.isLocked ? 'disabled' : ''}>
                 Next <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="13 17 18 12 13 7"></polyline><polyline points="6 17 11 12 6 7"></polyline></svg>
               </button>
             </div>
@@ -622,19 +668,19 @@
 
           <div id="explore-${index}" class="explore-area">
             <button class="card-action" data-action="google" data-index="${index}">
-              <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 24c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 21.53 7.7 24 12 24z"/><path fill="#FBBC05" d="M5.84 15.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V8.06H2.18C1.43 9.55 1 11.22 1 13s.43 3.45 1.18 4.94l3.66-2.84z"/><path fill="#EA4335" d="M12 4.84c1.61 0 3.06.56 4.21 1.64l3.15-3.15C17.45 1.63 14.97 0 12 0 7.7 0 3.99 2.47 2.18 6.06l3.66 2.84c.87-2.6 3.3-4.06 6.16-4.06z"/></svg> Google
+              <svg width="20" height="20" viewBox="0 0 24 24" style="margin-right:4px;"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 24c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 21.53 7.7 24 12 24z"/><path fill="#FBBC05" d="M5.84 15.1c-.22-.66-.35-1.36-.35-2.1s.13-1.44.35-2.1V8.06H2.18C1.43 9.55 1 11.22 1 13s.43 3.45 1.18 4.94l3.66-2.84z"/><path fill="#EA4335" d="M12 4.84c1.61 0 3.06.56 4.21 1.64l3.15-3.15C17.45 1.63 14.97 0 12 0 7.7 0 3.99 2.47 2.18 6.06l3.66 2.84c.87-2.6 3.3-4.06 6.16-4.06z"/></svg> Google
             </button>
             <button class="card-action" data-action="youtube" data-index="${index}">
-              <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#FF0000" d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> YouTube
+              <svg width="20" height="20" viewBox="0 0 24 24" style="margin-right:4px;"><path fill="#FF0000" d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg> YouTube
             </button>
-            <button class="card-action" style="color:#10b981;" data-action="nutrition" data-index="${index}">
+            <button class="card-action" style="color:var(--color-success);" data-action="nutrition" data-index="${index}">
               <span style="font-size:1.2rem;">💪</span> Health
             </button>
             <button class="card-action" data-action="internet" data-index="${index}">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Similar
             </button>
-            <button class="card-action" style="grid-column: 1 / -1; color:#25D366; background:var(--color-surface);" data-action="whatsapp" data-index="${index}">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+            <button class="card-action" style="color:var(--color-bg); background:var(--color-success);" data-action="whatsapp" data-index="${index}">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
               Share via WhatsApp
             </button>
           </div>
@@ -690,7 +736,6 @@
 
       const isInternet = card.source === 'internet';
 
-      // Smart Next Logic: If it's an internet card, fetch from internet directly
       if (direction === 'next' && isInternet) {
         const newMealName = await fetchSurpriseMealFromInternet();
         card.history.push(newMealName);
@@ -719,7 +764,6 @@
         return;
       }
 
-      // Default DB fallback logic
       const cleanKey = card.time.replace(/^[^a-zA-Z]+/, '').trim().split(' ')[0].toLowerCase();
       const used = state.currentSuggestions.filter((_, i) => i !== index).map(item => item.name);
       
@@ -780,7 +824,7 @@
           state.db[category].forEach((item) => {
             const row = document.createElement('div');
             row.className = 'data-row';
-            row.innerHTML = `<span>${escapeHtml(item)}</span>`;
+            row.innerHTML = `<span style="font-weight:600; font-family:var(--font-display); font-size:1.125rem;">${escapeHtml(item)}</span>`;
             section.appendChild(row);
           });
         }
@@ -911,7 +955,7 @@
       if (button.dataset.action === 'next') await refreshSpecificCategoryCard(index, 'next');
       if (button.dataset.action === 'toggle-explore') {
         const exploreDiv = document.getElementById(`explore-${index}`);
-        exploreDiv.style.display = (exploreDiv.style.display === 'none' || exploreDiv.style.display === '') ? 'grid' : 'none';
+        exploreDiv.classList.toggle('open');
       }
       if (button.dataset.action === 'lock') lockChoiceIntoExclusionMemory(index);
       if (button.dataset.action === 'google') openRecipeSearch(index, 'google');
@@ -928,7 +972,6 @@
          window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank', 'noopener,noreferrer');
       }
 
-      // Bookmark Toggle Logic
       if (button.dataset.action === 'toggle-queue') {
         const card = state.currentSuggestions[index];
         const rawTime = card.time.replace(/^[^a-zA-Z]+/, '').trim();
@@ -940,12 +983,10 @@
         const qIndex = pendingApprovals.findIndex(m => m.category === category && m.meal.toLowerCase() === normalized.toLowerCase());
         
         if (qIndex > -1) {
-           // Remove from Queue
            pendingApprovals.splice(qIndex, 1);
            button.classList.remove('added');
            button.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path></svg>`;
         } else {
-           // Add to Queue
            if (state.db[category].some(m => m.toLowerCase() === normalized.toLowerCase())) {
                alert("Already in database!");
                return;
@@ -960,13 +1001,11 @@
 
     [els.dataModal, els.fridgeModal].forEach(modal => modal.addEventListener('click', event => { if (event.target === modal) closeModal(modal); }));
     
-    // Deep Linking: Jump straight to CookBook categories from stats
     document.querySelectorAll('[data-open-cookbook]').forEach(stat => {
       stat.addEventListener('click', () => {
         const category = stat.dataset.openCookbook;
         openModal(els.dataModal);
         renderSpreadsheetModal();
-        // Allow time for modal open animation
         setTimeout(() => {
           const target = els.tableSections.querySelector(`[data-section="${category}"]`);
           if (target && els.cookBookScrollArea) {
